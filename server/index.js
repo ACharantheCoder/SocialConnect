@@ -1,3 +1,5 @@
+const helpRequestRoutes = require("./routes/helpRequestRoutes");
+const protectedRoutes = require("./routes/protectedRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -10,6 +12,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/protected", protectedRoutes);
+app.use("/api/help-requests", helpRequestRoutes);
 
 // Health check
 app.get("/", (req, res) => {
