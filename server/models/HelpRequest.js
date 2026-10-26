@@ -31,6 +31,12 @@ const helpRequestSchema = new mongoose.Schema(
       trim: true,
     },
 
+    flair: {
+      type: String,
+      enum: ["Urgent", "Help Needed", "Awareness", "Community"],
+      default: "Help Needed",
+    },
+
     status: {
       type: String,
       enum: ["pending", "accepted", "completed", "rejected", "cancelled"],

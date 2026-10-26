@@ -7,6 +7,8 @@ const {
 
 const router = express.Router();
 
+const allowedFlairs = ["Urgent", "Help Needed", "Awareness", "Community"];
+
 // Create a help request
 router.post(
   "/",
@@ -14,12 +16,16 @@ router.post(
   authorizeRoles("Citizen"),
   async (req, res) => {
     try {
-      const { title, description, type, city, quantity } = req.body;
+      const { title, description, type, city, quantity, flair } = req.body;
 
       if (!title || !type || !city) {
         return res.status(400).json({
           message: "Title, type, and city are required.",
         });
+      }
+
+      if (flair !== undefined && !allowedFlairs.includes(flair)) {
+        return res.status(400).json({ message: "Invalid flair." });
       }
 
       const helpRequest = await HelpRequest.create({
@@ -29,6 +35,7 @@ router.post(
         type,
         city,
         quantity,
+        flair: flair || "Help Needed",
       });
 
       return res.status(201).json({
@@ -49,7 +56,7 @@ router.post(
   },
 );
 
-// Get the logged-in Citizen's requests
+// Get all requests belonging to the logged-in Citizen
 router.get("/", authMiddleware, authorizeRoles("Citizen"), async (req, res) => {
   try {
     const requests = await HelpRequest.find({
@@ -66,6 +73,7 @@ router.get("/", authMiddleware, authorizeRoles("Citizen"), async (req, res) => {
   }
 });
 
+// Get one request belonging to the logged-in Citizen
 router.get(
   "/:id",
   authMiddleware,
@@ -92,6 +100,7 @@ router.get(
       }
 
       console.error("Fetch single help request error:", error);
+
       return res.status(500).json({
         message: "Failed to fetch help request.",
       });
@@ -99,13 +108,14 @@ router.get(
   },
 );
 
+// Edit a pending request
 router.put(
   "/:id",
   authMiddleware,
   authorizeRoles("Citizen"),
   async (req, res) => {
     try {
-      const { title, description, type, city, quantity } = req.body;
+      const { title, description, type, city, quantity, flair } = req.body;
 
       const updates = {};
 
@@ -114,6 +124,14 @@ router.put(
       if (type !== undefined) updates.type = type;
       if (city !== undefined) updates.city = city;
       if (quantity !== undefined) updates.quantity = quantity;
+
+      if (flair !== undefined) {
+        if (!allowedFlairs.includes(flair)) {
+          return res.status(400).json({ message: "Invalid flair." });
+        }
+
+        updates.flair = flair;
+      }
 
       if (Object.keys(updates).length === 0) {
         return res.status(400).json({
@@ -167,6 +185,7 @@ router.put(
   },
 );
 
+// Cancel a pending request
 router.patch(
   "/:id/cancel",
   authMiddleware,
