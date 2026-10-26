@@ -55,6 +55,16 @@ const helpRequestSchema = new mongoose.Schema(
       default: null,
     },
 
+    acceptedAt: {
+      type: Date,
+      default: null,
+    },
+
+    completedAt: {
+      type: Date,
+      default: null,
+    },
+
     // Reserved for the Phase 3 fraud engine
     fraudScore: {
       type: Number,

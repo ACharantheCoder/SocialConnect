@@ -1,3 +1,4 @@
+const donorRoutes = require("./routes/donorRoutes");
 const helpRequestRoutes = require("./routes/helpRequestRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 const express = require("express");
@@ -14,6 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/protected", protectedRoutes);
 app.use("/api/help-requests", helpRequestRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/donor", donorRoutes);
 
 // Health check
 app.get("/", (req, res) => {
