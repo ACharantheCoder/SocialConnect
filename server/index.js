@@ -1,3 +1,4 @@
+const ngoRoutes = require("./routes/ngoRoutes");
 const donorRoutes = require("./routes/donorRoutes");
 const helpRequestRoutes = require("./routes/helpRequestRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
@@ -17,6 +18,7 @@ app.use("/api/protected", protectedRoutes);
 app.use("/api/help-requests", helpRequestRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/donor", donorRoutes);
+app.use("/api/ngo", ngoRoutes);
 
 // Health check
 app.get("/", (req, res) => {
